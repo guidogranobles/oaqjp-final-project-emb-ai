@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, make_response
 from EmotionDetection.emotion_detection import emotion_detector
 import json
 
@@ -12,6 +12,9 @@ def index():
 
 @app.route("/emotionDetector")
 def emotion_analyzer():
-    textToAnalyze = request.args["textToAnalyze"]
-    result = emotion_detector(textToAnalyze)
-    return jsonify(result)
+    text_to_analyze = request.args["textToAnalyze"]
+    result = emotion_detector(text_to_analyze)
+    if result["dominant_emotion"] == None:
+       return  {"message": "Invalid text! Please try again!."}, 400
+
+    return jsonify(result), 200
